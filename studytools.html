@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Study Tools - Learnix</title>
+
+<!-- PDF.js v2 (non-module, global pdfjsLib available) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+<script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
+</script>
+
+<style>
+body{font-family:Arial,sans-serif;background:#f4f4f9;margin:0;padding:0;}
+.container{max-width:700px;margin:50px auto;background:#fff;padding:30px;border-radius:10px;box-shadow:0 0 10px rgba(0,0,0,0.1);}
+h1{text-align:center;}
+input,button{width:100%;padding:10px;margin:5px 0;border-radius:5px;border:1px solid #ccc;}
+button{background:#007bff;color:#fff;border:none;cursor:pointer;}
+button:hover{background:#0056b3;}
+#summary{background:#eef;margin-top:10px;padding:10px;border-radius:5px;white-space:pre-wrap;}
+a{display:block;text-align:center;margin-top:20px;padding:10px;background:#28a745;color:#fff;text-decoration:none;border-radius:5px;}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Study Tools</h1>
+<label>Upload PDF/Text Material:</label>
+<input type="file" id="fileInput" accept=".pdf,.txt">
+<button id="uploadBtn">Upload Material</button>
+
+<h2>Material Summary</h2>
+<div id="summary">No material uploaded yet.</div>
+
+<h2>Generate Quiz</h2>
+<button id="generateQuizBtn">Go to Quiz</button>
+
+<a href="dashboard.html">Back to Dashboard</a>
+</div>
+
+<script>
+// Generate summary from text
+function generateSummary(text){
+    const sentences = text.split(/(?<=[.?!])\s+/).filter(s=>s.trim().length>30);
+    return sentences.slice(0,5).join(' ') || "Summary could not be generated.";
+}
+
+// Extract text from PDF using PDF.js
+async function extractPDFText(file){
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({data:arrayBuffer}).promise;
+    let text = '';
+    for(let i=1;i<=pdf.numPages;i++){
+        const page = await pdf.getPage(i);
+        const content = await page.getTextContent();
+        text += content.items.map(item=>item.str).join(' ') + ' ';
+    }
+    return text;
+}
+
+// Upload material
+document.getElementById('uploadBtn').addEventListener('click', async ()=>{
+    const file = document.getElementById('fileInput').files[0];
+    if(!file){ alert('Select a file'); return; }
+    let content = '';
+    try{
+        if(file.type === "application/pdf"){ content = await extractPDFText(file); }
+        else if(file.type === "text/plain"){ content = await file.text(); }
+        else { alert('Unsupported file type'); return; }
+
+        if(!content.trim()){ alert('Could not extract text from file'); return; }
+
+        localStorage.setItem('uploadedMaterial', content);
+        const summary = generateSummary(content);
+        localStorage.setItem('materialSummary', summary);
+        document.getElementById('summary').innerText = summary;
+        alert('Material uploaded and summary generated!');
+    }catch(e){
+        alert('Error reading file: '+e.message);
+    }
+});
+
+// Go to quiz
+document.getElementById('generateQuizBtn').addEventListener('click', ()=>{
+    if(!localStorage.getItem('materialSummary')){
+        alert('Upload material first!');
+        return;
+    }
+    window.location.href='quiz.html';
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz - Learnix</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f4f4f9;margin:0;padding:0;}
+.container{max-width:700px;margin:50px auto;background:#fff;padding:30px;border-radius:10px;box-shadow:0 0 10px rgba(0,0,0,0.1);}
+h1{text-align:center;}
+.question{margin:15px 0;}
+input{padding:8px;width:100%;margin-top:5px;border-radius:5px;border:1px solid #ccc;}
+button{padding:10px;background:#007bff;color:#fff;border:none;border-radius:5px;cursor:pointer;}
+button:hover{background:#0056b3;}
+a{display:block;text-align:center;margin-top:20px;padding:10px;background:#28a745;color:#fff;text-decoration:none;border-radius:5px;}
+.correct{color:green;}
+.wrong{color:red;}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Quiz</h1>
+<form id="quizForm"></form>
+<button id="submitBtn">Submit Quiz</button>
+<a href="dashboard.html">Cancel & Back to Dashboard</a>
+<div id="results"></div>
+</div>
+
+<script>
+let user = JSON.parse(localStorage.getItem('currentUser'));
+if(!user){ window.location.href='registration.html'; }
+
+const summary = localStorage.getItem('materialSummary') || '';
+if(!summary){ alert('No material summary found! Upload first.'); window.location.href='studytools.html'; }
+
+// Split summary into sentences
+const sentences = summary.split(/(?<=[.?!])\s+/).filter(s=>s.trim().length>15);
+
+// Generate short questions
+const quizQuestions = sentences.map(s=>{
+    const words = s.split(' ').filter(w=>w.length>3 && w.length<12); 
+    const answer = words[Math.floor(Math.random()*words.length)] || words[0];
+    const question = s.replace(answer,'_____');
+    return {question, answer};
+});
+
+// Render quiz
+const form = document.getElementById('quizForm');
+quizQuestions.forEach((q,i)=>{
+    const div = document.createElement('div');
+    div.className='question';
+    div.innerHTML = `<label>Q${i+1}: ${q.question}</label><input type="text" name="q${i}" required>`;
+    form.appendChild(div);
+});
+
+// Submit quiz
+document.getElementById('submitBtn').addEventListener('click', ()=>{
+    let score=0;
+    const inputs = [...form.querySelectorAll('input')];
+    inputs.forEach((input,i)=>{
+        if(input.value.trim().toLowerCase() === quizQuestions[i].answer.toLowerCase()){
+            score += 100/quizQuestions.length;
+        }
+    });
+
+    // Save to performance records in localStorage
+    const performanceRecords = JSON.parse(localStorage.getItem('quizRecords') || '[]');
+    performanceRecords.push({
+        user: user.email,
+        quiz: 'Material Quiz',
+        score: Math.round(score)
+    });
+    localStorage.setItem('quizRecords', JSON.stringify(performanceRecords));
+
+    // Redirect to performance page
+    window.location.href = 'performance.html';
+});
+</script>
+</body>
+</html>

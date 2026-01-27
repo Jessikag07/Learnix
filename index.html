@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learnix - Home</title>
+<style>
+body {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(to right, #6a11cb, #2575fc);
+  color: whitesmoke;
+  text-align: center;
+}
+
+/* --- Navigation bar --- */
+.navbar {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 15px;
+  text-align: right;
+}
+.navbar a {
+  color: #fff;
+  margin: 0 15px;
+  text-decoration: none;
+  font-weight: bold;
+}
+.navbar a:hover {
+  text-decoration: underline;
+}
+
+/* --- Website Name with Animation --- */
+h1 {
+  font-size: 60px;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  letter-spacing: 4px;
+  margin-top: 200px;
+  margin-bottom: 15px;
+}
+@keyframes glow {
+  from { text-shadow: 0 0 10px #fff, 0 0 20px #2575fc, 0 0 30px #6a11cb; }
+  to   { text-shadow: 0 0 20px #fff, 0 0 30px #2575fc, 0 0 50px #6a11cb; }
+}
+
+/* --- Subtitle --- */
+.subtitle {
+  font-size: 22px;
+  font-weight: 300;
+  letter-spacing: 1px;
+  color: #f1f1f1;
+  margin-bottom: 60px;
+}
+
+/* --- Footer --- */
+.footer {
+  text-align: center;
+  color: black;
+  font-weight: bold;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  padding: 10px 0;
+
+}
+</style>
+</head>
+
+<body>
+  <!-- Top navigation -->
+  <div class="navbar">
+    <a href="registration.html">Registration</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="studytools.html">Study Tools</a>
+    <a href="performance.html">Performance</a>
+  </div>
+
+  <!-- Website name -->
+  <h1>Learnix</h1>
+  <p class="subtitle" style = "color :beige">A personalised learning platform for your growth</p>
+
+  <!-- Footer -->
+  <p class="footer">
+    Copyright &copy; 2025 Learnix . All rights reserved.
+  </p>
+</body>
+</html>
