@@ -26,16 +26,11 @@ Learnix provides backend APIs for managing students, courses, and enrollments. I
 - MySQL 8+
 
 ### Setup
-```bash
-git clone https://github.com/Jessikag07/Learnix.git
-cd Learnix
-```
-
 Update `application.properties` with your database details:
 ```properties
 spring.datasource.url=jdbc:mysql://localhost:3306/learnix_db
-spring.datasource.username=your_username
-spring.datasource.password=your_password
+spring.datasource.username=root
+spring.datasource.password=
 ```
 
 Run the application:
